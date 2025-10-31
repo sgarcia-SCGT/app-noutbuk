@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi App de Recordatorios</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+
+
+
+    <style>
+
+        /* 🔹 MODALES 🔹 */
+   .overlay {
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: rgba(0, 0, 0, 0.7);
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     z-index: 999;
+   }
+
+   .modal {
+     background: #fff;
+     color: #000;
+     width: 80%;
+     max-width: 400px;
+     padding: 20px;
+     border: 3px solid #000;
+     border-radius: 10px;
+     box-shadow: 8px 8px 1px rgba(0,0,0,1);
+     display: none;
+     flex-direction: column;
+     animation: aparecer 0.3s ease;
+   }
+
+   .modal h2 {
+     margin-top: 0;
+     text-align: center;
+   }
+
+   /* 🔸 Ajuste de padding interno de campos */
+   .modal textarea,
+   .modal input[type="text"],
+   .modal input[type="date"] {
+     width: calc(100% - 10px); /* deja 5px a cada lado */
+     padding: 10px 5px;
+     border: 2px solid #000;
+     border-radius: 5px;
+     margin-top: 10px;
+     font-family: 'DM Sans', sans-serif;
+     font-size: 1rem;
+     box-sizing: border-box;
+   }
+
+   .modal-btns {
+     display: flex;
+     justify-content: space-between;
+     margin-top: 15px;
+   }
+
+   .modal-btns button {
+     flex: 1;
+     margin: 0 5px;
+     background: #27B7F5;
+     color: #fff;
+     border: 2px solid #000;
+     border-radius: 5px;
+     font-family: 'DM Sans', sans-serif;
+     font-size: 1rem;
+     padding: 10px;
+     box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.8);
+   }
+
+   .modal-btns button:hover {
+     background: #1b8cd1;
+   }
+
+   @keyframes aparecer {
+     from { transform: scale(0.8); opacity: 0; }
+     to { transform: scale(1); opacity: 1; }
+   }
+
+
+
+           body {
+             margin: 0;
+             padding: 0;
+             font-family: 'DM Sans', sans-serif;
+                background: #d5cff5;
+             color: #fff;
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+             min-height: 100vh;
+           }
+
+           h1 {
+             margin-top: 60px;
+             font-size: 2.8rem;
+             color: #000;
+           }
+
+           button {
+             display: block;
+             width: 80%;
+             margin: 15px auto;
+             padding: 15px 40px;
+             font-size: 1.4rem;
+             font-family: 'DM Sans', sans-serif;
+             color: #0f2027;
+             background: #fff;
+             border: 3px solid #000;
+             border-radius: 55px;
+             cursor: pointer;
+             transition: all 0.3s ease;
+             box-shadow: 8px 8px 1px rgba(0, 0, 0, 1);
+           }
+
+           button:active {
+             box-shadow: 4px 4px 1px rgba(0, 0, 0, 1);
+           }
+
+#output {
+  margin-top: 40px;
+  width: 80%;
+  max-width: 400px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 1px rgba(0, 0, 0, 1);
+  border: 3px solid #000;
+
+  /* 🔑 Solución para el Scroll: Establecer un límite de altura 🔑 */
+  max-height: 50vh; /* Máximo 50% de la altura de la pantalla visible */
+  overflow-y: auto; /* Muestra scroll si se excede el max-height */
+
+  min-height: 150px;
+  /* overflow-y: auto; ya no es necesario repetirla si está arriba */
+  color: #000;
+}
+
+           /* Bloques individuales */
+           .item {
+             position: relative;
+             padding: 10px 15px;
+             margin: 10px 0;
+             border-radius: 10px;
+             border: 2px solid #000;
+             box-shadow: 4px 4px 1px rgba(0,0,0,0.3);
+             max-height: 200px; /* scroll si es largo */
+             overflow-y: auto;
+             transition: transform 0.3s ease, opacity 0.3s ease;
+           }
+
+           /* Colores por tipo */
+           .nota { background-color: #7b64f6;
+                    color:#fff;}
+           .lista { background-color: #f8671a;
+                    color:#fff;}
+           .evento { background-color: #fff;
+                     color: #000;}
+
+           .fa-regular.fa-note-sticky {
+           margin-right:10px;
+           }
+              .fa-solid.fa-list-ul {
+           margin-right:10px;
+           }
+                .fa-regular.fa-calendar-days {
+           margin-right:10px;
+           }
+
+           .item ul {
+             padding-left: 20px;
+             margin: 5px 0 0 0;
+           }
+    </style>
+</head>
+<body>
+
+<h1>Noutbuk</h1>
+
+<button class="nota" onclick="añadirNota()"><i class="fa-regular fa-note-sticky"></i>Nueva nota</button>
+<button class="lista" onclick="añadirLista()"><i class="fa-solid fa-list-ul"></i>Nueva lista</button>
+<button class="evento" onclick="añadirEvento()"><i class="fa-regular fa-calendar-days"></i>Añadir evento</button>
+
+<div id="output"></div>
+
+<!-- 🔹 MODALES 🔹 -->
+<div id="modal-overlay" class="overlay" style="display: none;">
+    <!-- Modal Nota -->
+    <div id="modal-nota" class="modal">
+        <h2>Nueva nota</h2>
+        <label for="nota-text" class="sr-only">Texto de la nota</label>
+        <textarea id="nota-text" placeholder="Escribe tu nota aquí..."></textarea>
+
+        <div class="modal-btns">
+            <button onclick="cerrarModal()">Cancelar</button>
+            <button onclick="guardarNota()">Guardar</button>
+        </div>
+    </div>
+
+    <!-- Modal Lista -->
+    <div id="modal-lista" class="modal">
+        <h2>Nueva lista</h2>
+        <label for="lista-text" class="sr-only">Texto de la lista</label>
+        <textarea id="lista-text" placeholder="Escribe los elementos separados por comas..."></textarea>
+
+        <div class="modal-btns">
+            <button onclick="cerrarModal()">Cancelar</button>
+            <button onclick="guardarLista()">Guardar</button>
+        </div>
+    </div>
+
+    <!-- Modal Evento -->
+    <div id="modal-evento" class="modal">
+        <h2>Nuevo evento</h2>
+        <label for="evento-titulo" class="sr-only">Título del evento</label>
+        <input type="text" id="evento-titulo" placeholder="Título del evento">
+
+        <label for="evento-fecha" class="sr-only">Fecha del evento</label>
+        <input type="date" id="evento-fecha">
+
+        <div class="modal-btns">
+            <button onclick="cerrarModal()">Cancelar</button>
+            <button onclick="guardarEvento()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const output = document.getElementById('output');
+
+    // 🔹 Crear bloque de contenido (nota, lista o evento)
+    function crearBloque(tipo, contenido) {
+      const bloque = document.createElement('div');
+      bloque.className = 'item ' + tipo;
+      bloque.innerHTML = `<strong>${tipo.charAt(0).toUpperCase() + tipo.slice(1)}:</strong> ${contenido}`;
+
+      // Gesto de swipe para borrar (como Gmail)
+      let startX = 0;
+      let currentX = 0;
+      let swiping = false;
+
+      bloque.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        swiping = true;
+      });
+
+      bloque.addEventListener('touchmove', (e) => {
+        if (!swiping) return;
+        currentX = e.touches[0].clientX - startX;
+        if (currentX > 0) {
+          bloque.style.transform = `translateX(${currentX}px)`;
+          bloque.style.opacity = 1 - currentX / 200;
+        }
+      });
+
+      bloque.addEventListener('touchend', () => {
+        if (currentX > 120) {
+          bloque.style.transform = 'translateX(400px)';
+          bloque.style.opacity = 0;
+          setTimeout(() => bloque.remove(), 300);
+        } else {
+          bloque.style.transform = 'translateX(0)';
+          bloque.style.opacity = 1;
+        }
+        swiping = false;
+        currentX = 0;
+      });
+
+      output.appendChild(bloque);
+    }
+
+    /* ============================================================
+       🔹 SISTEMA DE MODALES
+    ============================================================ */
+    const overlay = document.getElementById('modal-overlay');
+    const modalNota = document.getElementById('modal-nota');
+    const modalLista = document.getElementById('modal-lista');
+    const modalEvento = document.getElementById('modal-evento');
+
+    function mostrarModal(modal) {
+      overlay.style.display = 'flex';
+      modal.style.display = 'flex';
+    }
+
+    function cerrarModal() {
+      overlay.style.display = 'none';
+      modalNota.style.display = 'none';
+      modalLista.style.display = 'none';
+      modalEvento.style.display = 'none';
+    }
+
+    /* ============================================================
+       🔹 ABRIR MODALES
+    ============================================================ */
+    function añadirNota() { mostrarModal(modalNota); }
+    function añadirLista() { mostrarModal(modalLista); }
+    function añadirEvento() { mostrarModal(modalEvento); }
+
+    /* ============================================================
+       🔹 GUARDAR DATOS
+    ============================================================ */
+    // Guardar Nota
+    function guardarNota() {
+      const texto = document.getElementById('nota-text').value.trim();
+      if (texto) crearBloque('nota', texto);
+      document.getElementById('nota-text').value = '';
+      cerrarModal();
+    }
+
+    // Guardar Lista
+    function guardarLista() {
+      const texto = document.getElementById('lista-text').value.trim();
+      if (texto) {
+        const items = texto.split(',').map(i => `<li>${i.trim()}</li>`).join('');
+        crearBloque('lista', `<ul>${items}</ul>`);
+      }
+      document.getElementById('lista-text').value = '';
+      cerrarModal();
+    }
+
+    // Guardar Evento
+    function guardarEvento() {
+      const titulo = document.getElementById('evento-titulo').value.trim();
+      const fecha = document.getElementById('evento-fecha').value;
+      if (titulo && fecha) {
+        crearBloque('evento', `${titulo} - <em>${fecha}</em>`);
+      }
+      document.getElementById('evento-titulo').value = '';
+      document.getElementById('evento-fecha').value = '';
+      cerrarModal();
+    }
+</script>
+
+
+</body>
+</html>

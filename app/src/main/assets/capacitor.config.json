@@ -1,0 +1,6 @@
+{
+	"appId": "com.alarmapp.nextn",
+	"appName": "Nextn",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
