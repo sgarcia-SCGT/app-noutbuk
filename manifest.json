@@ -1,0 +1,17 @@
+{
+  "name": "Noutbuk - Recordatorios",
+  "short_name": "Noutbuk",
+  "description": "Mi aplicación de recordatorios rápida.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#d5cff5",
+  "theme_color": "#7b64f6",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+   
+  ]
+}
